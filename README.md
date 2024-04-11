@@ -1,6 +1,6 @@
-<h1>Bareos client installer</h1>
+<h1 style="background-color:rgba(12, 10, 174, 0.1);">Bareos client installer</h1>
 <i>bareos client installer/remoover</i>
-<p>This script not install bareos server, it's for quick setup clients on server only!</p>
+<p><strong>This script not install bareos server, it's for quick setup clients on server only!</strong></p>
 <p><i>Python source code, this is my first project, so please don't judge too harshly</i></p>
 
 ----
