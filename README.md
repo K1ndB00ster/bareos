@@ -4,7 +4,7 @@
 <i>Python source code, this is my first project, so please don't judge too harshly</i>
 
 ----
-<img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/Django">
+<img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/Django?style=plastic">
 
 ```python
 import os
