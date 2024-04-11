@@ -1,8 +1,10 @@
 # bareos
-# bareos client installer/remoover
-# This script not install bareos server, it's for quick setup clients on server only!
-# Source code for python
+bareos client installer/remoover
+This script not install bareos server, it's for quick setup clients on server only!
+Source code for python
 
+----
+```python
 import os
 
 def main():
@@ -162,3 +164,4 @@ def action2():
 
 if __name__ == "__main__":
     main()
+```
