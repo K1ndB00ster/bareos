@@ -1,9 +1,11 @@
-# bareos
-bareos client installer/remoover
-This script not install bareos server, it's for quick setup clients on server only!
-Source code for python
+<h1>Bareos client installer</h1>
+>bareos client installer/remoover
+>This script not install bareos server, it's for quick setup clients on server only!
+<i>Python source code, this is my first project, so please don't judge too harshly</i>
 
 ----
+<img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/Django">
+
 ```python
 import os
 
