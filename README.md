@@ -8,22 +8,22 @@ Source code for python
 import os
 
 def main():
-    print("Привіт! Зараз я допоможу тобі з Бареосом, обери бажану дію: ")
-    print("1. Створити налаштування для нового клієнта на сервері")
-    print("2. Видалити існуючого клієнта")
-    choice = input("Що робити будемо, обери варійант: ")
+    print("Hello! Now I will help you with Bareos, choose the desired action: ")
+    print("1. Create settings for a new client on the server")
+    print("2. Delete an existing client")
+    choice = input("What will we do, choose an option: ")
 
     if choice == '1':
-        #Створюємо змінні:
-        clientname = input("Введіть ім'я клієнту: ")
-        address = input('Введіть адресу клієнту: ')
-        port = input('Вкажіть порт для бекапів (за замовчанням 9101-9103, оберіть один з них та вкажіть): ')
-        key = input('Введіть ключ клієнту: ')
-        folder = input('Вкажіть точний маршрут діректорії яку потрібно резервувати: ')
-        timefull = input('Вкажіть бажаний час для повного бекапу у вигляді 13:00 : ')
-        timeinc = input('Вкажіть бажаний час для інкрементального бекапу у вигляді 14:00 : ')
+        #Create variables:
+        clientname = input("Enter client name: ")
+        address = input('Enter ip address client: ')
+        port = input('Specify the port for backups (by default 9101-9103, choose one of them and specify): ')
+        key = input('Enter client key: ')
+        folder = input('Specify the exact path of the directory to be backed up: ')
+        timefull = input('Specify the desired time for a full backup in the form of 13:00: ')
+        timeinc = input('Specify the desired time for the incremental backup as 14:00: ')
 
-        #Задаємо маршрути до створення файлів
+        #Set routes to create files
         client = open(f'/etc/bareos/bareos-dir.d/client/{clientname}.conf', 'w+')
         fileset = open(f'/etc/bareos/bareos-dir.d/fileset/{clientname}.conf', 'w+')
         job = open(f'/etc/bareos/bareos-dir.d/job/{clientname}.conf', 'w+')
@@ -32,8 +32,8 @@ def main():
         poolinc = open(f'/etc/bareos/bareos-dir.d/pool/{clientname}-inc.conf', 'w+')
         schedule = open(f'/etc/bareos/bareos-dir.d/schedule/{clientname}.conf', 'w+')
 
-        #Створюємо необхідні для бекапів файли
-        #Налаштування клієнту:
+        #Create the necessary files for backups
+        #Client settings:
         client.write(f'''Client {{
         Name = "{clientname}"
         Address = "{address}"
@@ -45,7 +45,7 @@ def main():
         }}
         ''')
 
-        #Налаштування директорії бекапів:
+        #Setting up the backup directory:
         fileset.write(f'''FileSet {{
         Name = "{clientname}"
         Enable VSS = yes
@@ -62,7 +62,7 @@ def main():
 
         ''')
 
-        #Робота для клієнту:
+        #Job for the client:
         job.write(f'''Job {{
         Name = "{clientname} Backup"
         Description = "Backup {clientname} (after the nightly save)"
@@ -86,7 +86,7 @@ def main():
         }}
         ''')
 
-        #Робота за замовчанням для створеного клієнту:
+        #Job by default for the created client:
         jobdefs.write(f'''JobDefs {{
         Name = "{clientname}"
         Type = Backup
@@ -105,7 +105,7 @@ def main():
         }}
         ''')
 
-        #Пул повних бекапів:
+        #A pool of full backups:
         poolfull.write(f'''Pool {{
         Name = {clientname}
         Pool Type = Backup
@@ -120,7 +120,7 @@ def main():
 
         ''')
 
-        #Пул інкрементальних бекапів:
+        #Pool of incremental backups:
         poolinc.write(f'''Pool {{
         Name = {clientname}-inc
         Pool Type = Backup
@@ -135,7 +135,7 @@ def main():
 
         ''')
 
-        #Файл планування завдань, або планувальник:
+        #Task scheduling file, or scheduler:
         schedule.write(f'''Schedule {{
         Name = "{clientname}"
         Run = Level = Full on 1 at {timefull}
@@ -143,24 +143,24 @@ def main():
         }}
         ''')
 
-        # Додаємо права та власника створеним файлам:
+        #Add the rights and owner to the created files:
         os.system(f'chmod 640 /etc/bareos/bareos-dir.d/client/{clientname}.conf /etc/bareos/bareos-dir.d/fileset/{clientname}.conf /etc/bareos/bareos-dir.d/job/{clientname}.conf /etc/bareos/bareos-dir.d/jobdefs/{clientname}.conf /etc/bareos/bareos-dir.d/pool/{clientname}.conf /etc/bareos/bareos-dir.d/pool/{clientname}-inc.conf /etc/bareos/bareos-dir.d/schedule/{clientname}.conf')
         os.system(f'chown bareos:bareos /etc/bareos/bareos-dir.d/client/{clientname}.conf /etc/bareos/bareos-dir.d/fileset/{clientname}.conf /etc/bareos/bareos-dir.d/job/{clientname}.conf /etc/bareos/bareos-dir.d/jobdefs/{clientname}.conf /etc/bareos/bareos-dir.d/pool/{clientname}.conf /etc/bareos/bareos-dir.d/pool/{clientname}-inc.conf /etc/bareos/bareos-dir.d/schedule/{clientname}.conf')
 
-        #Перезавантажуємо Бареос:
+        #Reload Bareos:
         os.system('systemctl restart bareos-dir bareos-sd bareos-fd')
     elif choice == '2':
-        clientname = input("Введіть Ім'я клієнту, якого бажаєте видалити: ")
+        clientname = input("Enter the Name of the client you want to delete: ")
         os.system(f'rm -rd /etc/bareos/bareos-dir.d/client/{clientname}.conf /etc/bareos/bareos-dir.d/fileset/{clientname}.conf /etc/bareos/bareos-dir.d/job/{clientname}.conf /etc/bareos/bareos-dir.d/jobdefs/{clientname}.conf /etc/bareos/bareos-dir.d/pool/{clientname}.conf /etc/bareos/bareos-dir.d/pool/{clientname}-inc.conf /etc/bareos/bareos-dir.d/schedule/{clientname}.conf')
         os.system('systemctl restart bareos-dir bareos-sd bareos-fd')
     else:
-        print("Неправильний вибір. Програма завершує роботу.")
+        print("Wrong choice. The program terminates.")
 
 def action1():
-    print("Ви обрали дію 1. Клієнта створено.")
+    print("You have chosen action 1. The client has been created.")
 
 def action2():
-    print("Ви обрали дію 2. Клієнта видалено.")
+    print('You have chosen action 2. The client has been deleted.')
 
 if __name__ == "__main__":
     main()
